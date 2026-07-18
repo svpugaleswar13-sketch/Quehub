@@ -1,0 +1,197 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --notch-bg: #F5F7FB;
+}
+
+@layer base {
+  body {
+    @apply font-body text-ink antialiased bg-bg;
+    background-image: 
+      radial-gradient(at 0% 0%, hsla(220, 100%, 97%, 1) 0px, transparent 50%),
+      radial-gradient(at 50% 0%, hsla(215, 100%, 98%, 1) 0px, transparent 50%),
+      radial-gradient(at 100% 0%, hsla(210, 100%, 97%, 1) 0px, transparent 50%);
+    background-attachment: fixed;
+  }
+  h1, h2, h3, h4 {
+    @apply font-display text-navy tracking-tight;
+  }
+  :focus-visible {
+    outline: 2px solid #2C6BED;
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-brand to-brand-600 px-5 py-3 text-sm font-semibold text-white shadow-md shadow-brand-100/50 transition duration-200 hover:from-brand-600 hover:to-brand-700 active:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none;
+  }
+  .btn-secondary {
+    @apply inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white/70 backdrop-blur-md px-5 py-3 text-sm font-semibold text-navy transition duration-200 hover:bg-navy-50/70 hover:border-slate-300 active:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none;
+  }
+  .btn-danger {
+    @apply inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-danger to-red-600 px-5 py-3 text-sm font-semibold text-white shadow-md shadow-red-100/50 transition duration-200 hover:from-red-600 hover:to-red-700 active:scale-[0.97] disabled:opacity-50;
+  }
+  .card {
+    --notch-bg: #ffffff;
+    @apply rounded-card border border-white bg-white/70 backdrop-blur-lg p-6 shadow-sm transition duration-300 hover:translate-y-[-2px] hover:shadow-md hover:border-slate-200/50;
+  }
+  .input {
+    @apply w-full rounded-xl border border-slate-200 bg-white/50 backdrop-blur-sm px-4 py-3 text-sm text-ink placeholder:text-slate-400 focus:border-brand focus:bg-white focus:outline-none focus:ring-4 focus:ring-brand-100/50 transition duration-200;
+  }
+  .label {
+    @apply mb-1.5 block text-xs font-bold uppercase tracking-wider text-navy-600/80;
+  }
+
+  /* Perforated queue-ticket badge with clean notches */
+  .ticket-badge {
+    @apply relative inline-flex h-14 w-14 flex-none items-center justify-center rounded-xl border border-brand-100/70 bg-gradient-to-b from-brand-50 to-white font-mono text-lg font-bold text-brand-700 shadow-sm shadow-brand-50/50 overflow-visible;
+  }
+  .ticket-badge::before, .ticket-badge::after {
+    content: '';
+    position: absolute;
+    width: 8px;
+    height: 10px;
+    background: var(--notch-bg);
+    border: 1px solid rgba(44, 107, 237, 0.15);
+    top: 50%;
+    margin-top: -5px;
+    transition: background-color 0.3s;
+  }
+  .ticket-badge::before {
+    left: -1px;
+    border-radius: 0 4px 4px 0;
+    border-left: none;
+  }
+  .ticket-badge::after {
+    right: -1px;
+    border-radius: 4px 0 0 4px;
+    border-right: none;
+  }
+
+  .ticket-badge-lg {
+    @apply relative inline-flex h-20 w-20 flex-none items-center justify-center rounded-2xl border border-brand-100/70 bg-gradient-to-b from-brand-50 to-white font-mono text-2xl font-bold text-brand-700 shadow-sm shadow-brand-50/50 overflow-visible;
+  }
+  .ticket-badge-lg::before, .ticket-badge-lg::after {
+    content: '';
+    position: absolute;
+    width: 12px;
+    height: 14px;
+    background: var(--notch-bg);
+    border: 1px solid rgba(44, 107, 237, 0.15);
+    top: 50%;
+    margin-top: -7px;
+    transition: background-color 0.3s;
+  }
+  .ticket-badge-lg::before {
+    left: -1px;
+    border-radius: 0 6px 6px 0;
+    border-left: none;
+  }
+  .ticket-badge-lg::after {
+    right: -1px;
+    border-radius: 6px 0 0 6px;
+    border-right: none;
+  }
+
+  .ticket-badge-sm {
+    @apply relative inline-flex h-10 w-10 flex-none items-center justify-center rounded-lg border border-brand-100/70 bg-gradient-to-b from-brand-50 to-white font-mono text-sm font-bold text-brand-700 shadow-sm shadow-brand-50/50 overflow-visible;
+  }
+  .ticket-badge-sm::before, .ticket-badge-sm::after {
+    content: '';
+    position: absolute;
+    width: 6px;
+    height: 8px;
+    background: var(--notch-bg);
+    border: 1px solid rgba(44, 107, 237, 0.15);
+    top: 50%;
+    margin-top: -4px;
+    transition: background-color 0.3s;
+  }
+  .ticket-badge-sm::before {
+    left: -1px;
+    border-radius: 0 3px 3px 0;
+    border-left: none;
+  }
+  .ticket-badge-sm::after {
+    right: -1px;
+    border-radius: 3px 0 0 3px;
+    border-right: none;
+  }
+
+  .ticket-badge-selectable {
+    @apply cursor-pointer transition hover:border-brand hover:from-brand-100 hover:to-brand-50 hover:shadow-md hover:shadow-brand-100/30;
+  }
+  .ticket-badge-selectable:hover::before, .ticket-badge-selectable:hover::after {
+    border-color: rgba(44, 107, 237, 0.3);
+  }
+  .ticket-badge-taken {
+    @apply cursor-not-allowed border-slate-200 bg-gradient-to-b from-slate-100 to-slate-50 text-slate-300 line-through shadow-none;
+  }
+  .ticket-badge-taken::before, .ticket-badge-taken::after {
+    border-color: rgba(208, 213, 221, 0.5);
+  }
+
+  .status-pill {
+    @apply inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold border transition duration-200;
+  }
+  
+  .bg-brand-50.text-brand-700 {
+    background-color: rgba(44, 107, 237, 0.08) !important;
+    color: #2C6BED !important;
+    border-color: rgba(44, 107, 237, 0.25) !important;
+  }
+  .bg-warning\/15.text-warning {
+    background-color: rgba(247, 144, 9, 0.08) !important;
+    color: #f79009 !important;
+    border-color: rgba(247, 144, 9, 0.25) !important;
+    animation: status-pulse 2s infinite ease-in-out;
+  }
+  .bg-success\/15.text-success {
+    background-color: rgba(18, 183, 106, 0.08) !important;
+    color: #12b76a !important;
+    border-color: rgba(18, 183, 106, 0.25) !important;
+  }
+  .bg-slate-200.text-slate {
+    background-color: rgba(102, 112, 133, 0.08) !important;
+    color: #667085 !important;
+    border-color: rgba(102, 112, 133, 0.25) !important;
+  }
+  .bg-danger\/15.text-danger {
+    background-color: rgba(240, 68, 56, 0.08) !important;
+    color: #f04438 !important;
+    border-color: rgba(240, 68, 56, 0.25) !important;
+  }
+}
+
+@keyframes status-pulse {
+  0% { transform: scale(1); opacity: 0.95; }
+  50% { transform: scale(1.03); opacity: 1; box-shadow: 0 0 10px rgba(247, 144, 9, 0.25); }
+  100% { transform: scale(1); opacity: 0.95; }
+}
+
+.card:hover .text-3xl {
+  transform: scale(1.18) translateY(-2px) rotate(4deg);
+}
+.card .text-3xl {
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes scale-in {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+.animate-fade-in {
+  animation: fade-in 0.2s ease-out forwards;
+}
+.animate-scale-in {
+  animation: scale-in 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+
