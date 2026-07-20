@@ -31,7 +31,7 @@ export default function Login() {
     <div className="mx-auto flex min-h-[80vh] max-w-md flex-col justify-center px-6 py-12">
       <div className="mb-8 text-center">
         <span className="ticket-badge-lg mx-auto">Q</span>
-        <h1 className="mt-4 text-2xl font-bold">Welcome back</h1>
+        <h1 className="mt-4 text-2xl font-bold">Welcome backs</h1>
         <p className="mt-1 text-sm text-slate">Log in to book tokens or manage your queue.</p>
       </div>
 
