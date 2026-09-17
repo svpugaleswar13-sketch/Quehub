@@ -27,7 +27,7 @@ export default function BookingSuccess() {
         <div className="grid w-full grid-cols-2 gap-4 text-left">
           <div>
             <p className="text-xs font-semibold uppercase text-slate">Current token</p>
-            <p className="font-mono text-lg font-bold text-navy">{result.current_token ?? '—'}</p>
+            <p className="font-mono text-lg font-bold text-navy">{result.current_token || '—'}</p>
           </div>
           <div>
             <p className="text-xs font-semibold uppercase text-slate">Customers before you</p>

@@ -44,7 +44,7 @@ def dashboard(db: Session = Depends(get_db), user: models.User = Depends(require
 
     todays_bookings = base_query.count()
     completed = base_query.filter(models.Token.status == models.TokenStatus.completed).count()
-    cancelled = base_query.filter(models.Token.status == models.TokenStatus.cancelled).count()
+    cancelled = base_query.filter(models.Token.status.in_([models.TokenStatus.cancelled, models.TokenStatus.skipped])).count()
     pending = base_query.filter(models.Token.status.in_([models.TokenStatus.waiting, models.TokenStatus.serving])).count()
 
     current_token = None
@@ -121,6 +121,8 @@ async def skip_current(service_id: str, db: Session = Depends(get_db), user: mod
         raise HTTPException(status_code=404, detail="No token is currently being served")
 
     current.status = models.TokenStatus.skipped
+    if current.booking:
+        current.booking.status = models.BookingStatus.cancelled
     db.commit()
 
     await manager.broadcast(service.id, queue_snapshot(db, service))
@@ -236,7 +238,7 @@ def reports(db: Session = Depends(get_db), user: models.User = Depends(require_o
     base_query = db.query(models.Token).filter(models.Token.service_id.in_(service_ids), models.Token.date == today)
     todays_bookings = base_query.count()
     completed = base_query.filter(models.Token.status == models.TokenStatus.completed).count()
-    cancelled = base_query.filter(models.Token.status == models.TokenStatus.cancelled).count()
+    cancelled = base_query.filter(models.Token.status.in_([models.TokenStatus.cancelled, models.TokenStatus.skipped])).count()
 
     avg_service_time = 0
     if org.services:

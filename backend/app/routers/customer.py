@@ -1,4 +1,4 @@
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.exc import IntegrityError
@@ -58,7 +58,7 @@ def get_service_detail(service_id: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Service not found")
 
     snap = queue_snapshot(db, service)
-    customers_ahead = snap["booked_tokens"]  # rough estimate for the "next" token
+    customers_ahead = len([t for t in snap["queue"] if t["status"] in ("waiting", "serving")])
     return schemas.ServiceDetailOut(
         service=schemas.ServiceOut.model_validate(service),
         current_token=snap["current_token"],
@@ -110,11 +110,12 @@ async def book_token(
 
     customers_ahead = count_waiting_ahead(db, service.id, today, payload.token_number)
     wait_minutes = estimate_wait_minutes(customers_ahead, service.average_service_time)
+    arrival_time = datetime.utcnow() + timedelta(minutes=wait_minutes)
 
     booking = models.Booking(
         customer_id=customer.id,
         token_id=new_token.id,
-        estimated_time=datetime.utcnow(),
+        estimated_time=arrival_time,
         status=models.BookingStatus.waiting,
     )
     db.add(booking)
@@ -140,7 +141,7 @@ async def book_token(
         current_token=current,
         customers_before_you=customers_ahead,
         estimated_waiting_time_minutes=wait_minutes,
-        estimated_arrival_time=datetime.utcnow(),
+        estimated_arrival_time=arrival_time,
         status=booking.status,
     )
 
@@ -166,6 +167,8 @@ def booking_history(db: Session = Depends(get_db), customer: models.User = Depen
     results = []
     for b in bookings:
         token = b.token
+        if not token or not token.service or not token.service.organization:
+            continue
         service = token.service
         org = service.organization
         results.append(schemas.BookingHistoryOut(

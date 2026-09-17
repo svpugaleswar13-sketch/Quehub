@@ -51,7 +51,7 @@ export default function ServiceDetails() {
       <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
         <div className="card py-4 text-center">
           <p className="text-xs font-semibold uppercase text-slate">Current token</p>
-          <p className="mt-1 font-mono text-2xl font-bold text-brand-700">{current_token ?? '—'}</p>
+          <p className="mt-1 font-mono text-2xl font-bold text-brand-700">{current_token || '—'}</p>
         </div>
         <div className="card py-4 text-center">
           <p className="text-xs font-semibold uppercase text-slate">Booked</p>

@@ -102,7 +102,7 @@ class Token(Base):
     booking_time = Column(DateTime, default=datetime.utcnow)
 
     service = relationship("Service", back_populates="tokens")
-    booking = relationship("Booking", back_populates="token", uselist=False)
+    booking = relationship("Booking", back_populates="token", uselist=False, cascade="all, delete-orphan")
 
 
 class Booking(Base):

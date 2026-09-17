@@ -46,7 +46,7 @@ class UserRegister(BaseModel):
         if v is None or v.strip() == "":
             return None
         cleaned = v.strip()
-        pattern = r"^(0[1-9]|1[0-2]):[0-5][0-9]\s(AM|PM|am|pm)\s-\s(0[1-9]|1[0-2]):[0-5][0-9]\s(AM|PM|am|pm)$"
+        pattern = r"^(0?[1-9]|1[0-2]):[0-5][0-9]\s(AM|PM|am|pm)\s-\s(0?[1-9]|1[0-2]):[0-5][0-9]\s(AM|PM|am|pm)$"
         if not re.match(pattern, cleaned):
             raise ValueError("Working hours must be in the format 'HH:MM AM/PM - HH:MM AM/PM' (e.g., 09:00 AM - 05:00 PM)")
         return cleaned
@@ -113,7 +113,7 @@ class OrganizationUpdate(BaseModel):
         if v is None or v.strip() == "":
             return None
         cleaned = v.strip()
-        pattern = r"^(0[1-9]|1[0-2]):[0-5][0-9]\s(AM|PM|am|pm)\s-\s(0[1-9]|1[0-2]):[0-5][0-9]\s(AM|PM|am|pm)$"
+        pattern = r"^(0?[1-9]|1[0-2]):[0-5][0-9]\s(AM|PM|am|pm)\s-\s(0?[1-9]|1[0-2]):[0-5][0-9]\s(AM|PM|am|pm)$"
         if not re.match(pattern, cleaned):
             raise ValueError("Working hours must be in the format 'HH:MM AM/PM - HH:MM AM/PM' (e.g., 09:00 AM - 05:00 PM)")
         return cleaned

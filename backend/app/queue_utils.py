@@ -27,7 +27,7 @@ def get_current_serving_number(db: Session, service_id: str, on_date: date) -> O
         .order_by(models.Token.token_number.desc())
         .first()
     )
-    return last_completed.token_number if last_completed else 0
+    return last_completed.token_number if last_completed else None
 
 
 def get_booked_token_numbers(db: Session, service_id: str, on_date: date) -> set:
@@ -36,9 +36,6 @@ def get_booked_token_numbers(db: Session, service_id: str, on_date: date) -> set
         .filter(
             models.Token.service_id == service_id,
             models.Token.date == on_date,
-            models.Token.status.in_([
-                models.TokenStatus.waiting, models.TokenStatus.serving, models.TokenStatus.completed
-            ]),
         )
         .all()
     )
