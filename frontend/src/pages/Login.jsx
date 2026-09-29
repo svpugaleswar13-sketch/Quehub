@@ -17,7 +17,8 @@ export default function Login() {
     setError('')
     setLoading(true)
     try {
-      const data = await login(email, password)
+      const cleanEmail = email.trim().toLowerCase()
+      const data = await login(cleanEmail, password)
       signIn(data.access_token, data.user)
       navigate(data.user.role === 'organization' ? '/org/dashboard' : '/dashboard')
     } catch (err) {

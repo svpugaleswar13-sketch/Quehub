@@ -24,13 +24,18 @@ export default function Register() {
     setError('')
     setLoading(true)
     try {
-      const payload = { name: form.name, email: form.email, password: form.password, role }
+      const payload = {
+        name: form.name.trim(),
+        email: form.email.trim().toLowerCase(),
+        password: form.password,
+        role,
+      }
       if (role === 'organization') {
         Object.assign(payload, {
-          organization_name: form.organization_name,
+          organization_name: form.organization_name.trim(),
           domain: form.domain,
-          address: form.address,
-          working_hours: form.working_hours,
+          address: form.address?.trim() || '',
+          working_hours: form.working_hours?.trim() || '09:00 AM - 05:00 PM',
         })
       }
       const data = await register(payload)

@@ -4,6 +4,7 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 
 export const client = axios.create({
   baseURL: API_URL,
+  timeout: 15000,
 })
 
 client.interceptors.request.use((config) => {
@@ -18,13 +19,16 @@ client.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response) {
-      const { status, data } = error.response
-      // Clear session and redirect if token is expired/invalid (401) or role mismatch (403)
+      const { status, data, config } = error.response
+      const isAuthEndpoint = config?.url?.includes('/auth/')
+      // Clear session and redirect if token is expired/invalid (401) or role mismatch (403),
+      // but do not redirect if the request was an auth endpoint (login/register)
       if (
-        status === 401 ||
-        (status === 403 &&
-          (data?.detail === 'Customer access required' ||
-            data?.detail === 'Organization access required'))
+        !isAuthEndpoint &&
+        (status === 401 ||
+          (status === 403 &&
+            (data?.detail === 'Customer access required' ||
+              data?.detail === 'Organization access required')))
       ) {
         localStorage.removeItem('queuehub_token')
         localStorage.removeItem('queuehub_user')

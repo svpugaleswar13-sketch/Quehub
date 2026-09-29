@@ -1,7 +1,13 @@
 export function getErrorMessage(err, fallback) {
+  if (!err) return fallback || 'An unknown error occurred'
+
+  if (err.code === 'ECONNABORTED' || (err.message && err.message.toLowerCase().includes('timeout'))) {
+    return 'Request timed out. Please check if the backend server is running and try again.'
+  }
+
   if (!err.response) {
     if (err.message === 'Network Error' || err.code === 'ERR_NETWORK') {
-      return 'Cannot connect to the server. Please check your internet connection or ensure the backend server is running on port 8000.'
+      return 'Cannot connect to the backend server. Please ensure the backend server is running at http://localhost:8000.'
     }
     return err.message || fallback
   }
@@ -15,8 +21,9 @@ export function getErrorMessage(err, fallback) {
   if (!detail) return fallback
   if (typeof detail === 'string') return detail
   if (Array.isArray(detail)) {
-    return detail.map((d) => d.msg).join(', ')
+    return detail.map((d) => d.msg || JSON.stringify(d)).join(', ')
   }
   return fallback
 }
+
 

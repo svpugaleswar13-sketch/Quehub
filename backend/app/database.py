@@ -50,7 +50,24 @@ def _resolve_database_url(url: str) -> str:
     return url
 
 
-engine = create_engine(_resolve_database_url(settings.database_url), pool_pre_ping=True)
+connect_args = {}
+if "postgresql" in settings.database_url:
+    connect_args = {
+        "connect_timeout": 15,
+        "keepalives": 1,
+        "keepalives_idle": 30,
+        "keepalives_interval": 10,
+        "keepalives_count": 5,
+    }
+
+engine = create_engine(
+    _resolve_database_url(settings.database_url),
+    pool_size=10,
+    max_overflow=20,
+    pool_recycle=300,
+    pool_pre_ping=True,
+    connect_args=connect_args,
+)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()
