@@ -1,6 +1,7 @@
 from datetime import date, datetime, time as time_type
 
 from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.concurrency import run_in_threadpool
 from sqlalchemy import func
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
@@ -102,7 +103,8 @@ async def call_next(service_id: str, db: Session = Depends(get_db), user: models
     next_token.status = models.TokenStatus.serving
     db.commit()
 
-    await manager.broadcast(service.id, queue_snapshot(db, service))
+    snap = await run_in_threadpool(queue_snapshot, db, service)
+    await manager.broadcast(service.id, snap)
     return {"token_number": next_token.token_number, "status": next_token.status.value}
 
 
@@ -125,7 +127,8 @@ async def skip_current(service_id: str, db: Session = Depends(get_db), user: mod
         current.booking.status = models.BookingStatus.cancelled
     db.commit()
 
-    await manager.broadcast(service.id, queue_snapshot(db, service))
+    snap = await run_in_threadpool(queue_snapshot, db, service)
+    await manager.broadcast(service.id, snap)
     return {"token_number": current.token_number, "status": current.status.value}
 
 
@@ -148,7 +151,8 @@ async def complete_current(service_id: str, db: Session = Depends(get_db), user:
         current.booking.status = models.BookingStatus.completed
     db.commit()
 
-    await manager.broadcast(service.id, queue_snapshot(db, service))
+    snap = await run_in_threadpool(queue_snapshot, db, service)
+    await manager.broadcast(service.id, snap)
     return {"token_number": current.token_number, "status": current.status.value}
 
 
@@ -185,7 +189,8 @@ async def walk_in_booking(payload: schemas.WalkInBookingRequest, db: Session = D
     db.commit()
     db.refresh(new_token)
 
-    await manager.broadcast(service.id, queue_snapshot(db, service))
+    snap = await run_in_threadpool(queue_snapshot, db, service)
+    await manager.broadcast(service.id, snap)
     return new_token
 
 

@@ -53,7 +53,7 @@ def _resolve_database_url(url: str) -> str:
 connect_args = {}
 if "postgresql" in settings.database_url:
     connect_args = {
-        "connect_timeout": 15,
+        "connect_timeout": 5,
         "keepalives": 1,
         "keepalives_idle": 30,
         "keepalives_interval": 10,

@@ -1,6 +1,7 @@
 from datetime import date, datetime, timedelta
 
 from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.concurrency import run_in_threadpool
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
@@ -132,7 +133,8 @@ async def book_token(
     current = get_current_serving_number(db, service.id, today)
     org = db.query(models.Organization).filter(models.Organization.id == service.organization_id).first()
 
-    await manager.broadcast(service.id, queue_snapshot(db, service))
+    snap = await run_in_threadpool(queue_snapshot, db, service)
+    await manager.broadcast(service.id, snap)
 
     return schemas.BookingSuccessOut(
         organization_name=org.name if org else "",
