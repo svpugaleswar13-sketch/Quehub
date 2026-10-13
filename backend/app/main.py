@@ -6,17 +6,29 @@ backend_dir = str(Path(__file__).resolve().parent.parent)
 if backend_dir not in sys.path:
     sys.path.insert(0, backend_dir)
 
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy import text
 
 from app.config import settings
 from app.database import Base, engine
 from app.routers import auth, customer, organization, ws
 
-# Creates tables if they don't exist yet.
-Base.metadata.create_all(bind=engine)
 
-app = FastAPI(title="QueueHub API", version="0.1.0")
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Verify or create database tables on startup without crashing the entire web process
+    try:
+        Base.metadata.create_all(bind=engine)
+        print("[OK] Database tables verified/created successfully.")
+    except Exception as exc:
+        print(f"[WARNING] Database connection failed during startup: {exc}")
+        print("[HINT] If running on Render, ensure DATABASE_URL uses the 'External Database URL' if your web service and database are in different regions.")
+    yield
+
+
+app = FastAPI(title="QueueHub API", version="0.1.0", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
@@ -35,7 +47,13 @@ app.include_router(ws.router)
 
 @app.get("/health")
 def health_check():
-    return {"status": "ok"}
+    db_status = "ok"
+    try:
+        with engine.connect() as conn:
+            conn.execute(text("SELECT 1"))
+    except Exception as exc:
+        db_status = f"unreachable: {exc}"
+    return {"status": "ok", "database": db_status}
 
 
 if __name__ == "__main__":
