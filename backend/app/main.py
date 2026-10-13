@@ -43,7 +43,7 @@ app.include_router(auth.router)
 app.include_router(customer.router)
 app.include_router(organization.router)
 app.include_router(ws.router)
-
+ 
 
 @app.get("/health")
 def health_check():
