@@ -456,6 +456,7 @@ def run():
         # CUSTOMERS DATA
         # =========================
         customers_data = [
+            {"name": "Customer Demo", "email": "customer@queuehub.demo", "password": "password123"},
             {"name": "Karthik Raj", "email": "karthik@queuehub.demo", "password": "password123"},
             {"name": "Divya Shree", "email": "divya@queuehub.demo", "password": "password123"},
             {"name": "Rahul Krishna", "email": "rahul@queuehub.demo", "password": "password123"},
